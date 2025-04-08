@@ -110,41 +110,20 @@ void moveShark(int num) {
 }
 
 // 이동 후 상어 겹치는지 check && 냄새 업데이트
-void checkShark(vector<vector<Scent>>& board) {
-    // for (int i = 0; i < N; i++) {
-    //     for (int j = 0; j < N; j++) {
-    //         int size = board[i][j].value.size();
-
-    //         // 겹치는 상어 처리
-    //         if (size > 1) {
-    //             sort(board[i][j].value.begin(), board[i][j].value.end());
-    //             while (size != 1) {           
-    //                 int n = board[i][j].value[size-1];
-    //                 shark[n].life = false;
-    //                 board[i][j].value.pop_back();
-    //             }
-    //         }
-    //     }
-    // }
-
+void checkSmell(vector<vector<Scent>>& board) {
     // 냄새 처리
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             int n = board[i][j].value[0];
-            // 살아 있는 상어 칸 냄새 --
-            if (board[i][j].shark_k != 0 && shark[n].life == true) {
+            // 상어 칸 냄새 --
+            if (board[i][j].shark_k != 0) {
                 board[i][j].shark_k--;
             }
-            // // 죽은 상어 칸 냄새 없애기
-            // else if (board[i][j].shark_k != 0 && shark[n].life == false) {  
-            //     board[i][j].shark_num = 0;
-            //     board[i][j].shark_k = 0;
-            // }
 
             // 시간 다 되면 없어지기
             if (board[i][j].shark_k == 0) {
                 board[i][j].shark_num = 0;
-                board[i][j].shark_k = 0;
+                board[i][j].value[0] = 0;
             }
         }
     }
@@ -172,8 +151,6 @@ int main()
                 shark[value].col = j;
                 shark[value].life = true;
                 board[i][j].value[0] = value;
-                board[i][j].shark_num = value;      // 냄새 상어 번호
-                board[i][j].shark_k = K;            // 냄새 남은 시간
             }
         }
     }
@@ -193,21 +170,21 @@ int main()
     }
 
     /*
-    1. 상어 이동 + 죽기
-    2. 냄새 뿌리기
+    1. 현재 위치 냄새 뿌리기
+    2. 상어 이동 + 죽기
     3. 이전 자리 냄새 --
     */
 
     while (total_second < 1000) {
         for (int i = 1; i <= M; i++) {
+            if (shark[i].life) smelling(i, shark[i].row, shark[i].col);
+        }
+
+        for (int i = 1; i <= M; i++) {
             if (shark[i].life) moveShark(i);
         }
 
-        checkShark(board);
-
-        for (int i = 1; i <= M; i++) {
-            if (shark[i].life) smelling(i, shark[i].row, shark[i].col);
-        }
+        checkSmell(board);
 
         total_second++;
 
