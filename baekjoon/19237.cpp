@@ -1,5 +1,5 @@
 // https://www.acmicpc.net/problem/19237
-// 걸린 시간: 약 5시간
+// 2025-04-09 걸린 시간: 약 5시간
 
 #include <iostream>
 #include <vector>
