@@ -5,6 +5,8 @@
 #include <vector>
 #include <queue>
 
+#define INF (0x7fff0000)
+
 using namespace std;
 
 struct Point {
@@ -74,9 +76,12 @@ Point getNextStep(int num) {      // bfs
 
 // 시작 베이스캠프 찾기
 Point getBaseCamp(int srcRow, int srcCol, int dist) {
+    Point ret = {INF, INF, INF};
     queue<Point> q;
     vector<vector<bool>> visited(n+1, vector<bool>(n+1, false));
     q.push({srcRow, srcCol, dist});
+
+    visited[srcRow][srcCol] = true;
 
     while(!q.empty()) {
         int curr_row = q.front().row;
@@ -84,9 +89,29 @@ Point getBaseCamp(int srcRow, int srcCol, int dist) {
         int curr_dist = q.front().dist;
         q.pop();
 
+        // 베이스캠프 찾은 경우 (바로 return 하면 안되고 모든 경우 비교해봐야 함)
         if (board[curr_row][curr_col] == 1) {
-            board[curr_row][curr_col] = 2;
-            return {curr_row, curr_col, curr_dist};
+            if (curr_dist < ret.dist) {
+                ret.row = curr_row;
+                ret.col = curr_col;
+                ret.dist = curr_dist;
+            }
+            else if (curr_dist == ret.dist) {
+                if (curr_row < ret.row) {
+                    ret.row = curr_row;
+                    ret.col = curr_col;
+                    ret.dist = curr_dist;
+                }
+                else if (curr_row == ret.row) {
+                    if (curr_col < ret.col) {
+                        ret.row = curr_row;
+                        ret.col = curr_col;
+                        ret.dist = curr_dist;
+                    }
+                }
+            }
+
+            continue;
         }
 
         for (int i = 0; i < 4; i++) {
@@ -99,6 +124,8 @@ Point getBaseCamp(int srcRow, int srcCol, int dist) {
             q.push({nr, nc, curr_dist + 1});
         }
     }
+    
+    return ret;
 }
 
 
