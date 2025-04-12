@@ -6,14 +6,10 @@
 #include <queue>
 #include <algorithm>
 
-#define MIN (-1)
-#define MAX (0x7fff0000)
+#define INF (0x7fff0000)
+#define MIN 0
 
 using namespace std;
-
-struct Point {
-    int ar, ac, dr, dc;
-};
 
 struct RC {
     int row, col;
@@ -29,68 +25,61 @@ int n, m, k;
 vector<vector<Info>> board;
 int D[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};   // 우, 하, 좌, 상
 
-Point getAD() {
-    Point ret;
-    int min = MAX;
-    int max = MIN;
+// 누가 더 약한가
+bool isWeak(RC a, RC b) {
+    if (board[a.row][a.col].damage != board[b.row][b.col].damage) {
+        return board[a.row][a.col].damage < board[b.row][b.col].damage;
+    }
+
+    if (board[a.row][a.col].attack_time != board[b.row][b.col].attack_time) {
+        return board[a.row][a.col].attack_time > board[b.row][b.col].attack_time;
+    }
+
+    if (a.row + a.col != b.row + b.col) {
+        return a.row + a.col > b.row + b.col;
+    }
+
+    return a.col > b.col;
+}
+
+// 공격자
+RC getWeakestTower() {
+    RC ret = {0, 0};
+
+    board[0][0].damage = INF;
 
     for (int i = 1; i <= n; i++) {
         for (int j = 1; j <= m; j++) {
-            if (board[i][j].damage != 0) {
-                // 가장 약한 포탑
-                if (board[i][j].damage < min) {
-                    min = board[i][j].damage;
-                    ret.ar = i;
-                    ret.ac = j;
-                }
-                else if (board[i][j].damage == min) {
-                    if (board[i][j].attack_time > board[ret.ar][ret.ac].attack_time) {  // 가장 최근에 공격한 포탑
-                        ret.ar = i;
-                        ret.ac = j;
-                    }
-                    else if (board[i][j].attack_time == board[ret.ar][ret.ac].attack_time) {
-                        if (i + j > ret.ar + ret.ac) {      // 열과 행의 합이 가장 큰 포탑
-                            ret.ar = i;
-                            ret.ac = j;
-                        }
-                        else if (i + j == ret.ar + ret.ac) {    // 열 값이 가장 큰 포탑
-                            if (j > ret.ac) {
-                                ret.ar = i;
-                                ret.ac = j;
-                            }
-                        }
-                    }
-                }
+            if (board[i][j].damage == 0) continue;
 
-                // 가장 강한 포탑
-                if (board[i][j].damage > max) {
-                    max = board[i][j].damage;
-                    ret.dr = i;
-                    ret.dc = j;
-                }
-                else if (board[i][j].damage == max) {
-                    if (board[i][j].attack_time < board[ret.dr][ret.dc].attack_time) {  // 가장 옛날에 공격한 포탑
-                        ret.dr = i;
-                        ret.dc = j;
-                    }
-                    else if (board[i][j].attack_time == board[ret.dr][ret.dc].attack_time) {
-                        if (i + j < ret.dr + ret.dc) {      // 열과 행의 합이 가장 작은 포탑
-                            ret.dr = i;
-                            ret.dc = j;
-                        }
-                        else if (i + j == ret.dr + ret.dc) {    // 열 값이 가장 작은 포탑
-                            if (j < ret.dc) {
-                                ret.dr = i;
-                                ret.dc = j;
-                            }
-                        }
-                    }
-                }
+            RC tmp = {i, j};
+            if (isWeak(tmp, ret) == true) {     // tmp가 더 작으면
+                ret = tmp;
             }
         }
     }
 
-    board[ret.ar][ret.ac].damage += n + m;     // 공격자 버프
+    return ret;
+}
+
+// 방어자
+RC getStrongestTower(RC at) {
+    RC ret = {0, 0};
+
+    board[0][0].damage = MIN;
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            if (board[i][j].damage == 0) continue;
+            if (i == at.row && j == at.col) continue;   // 공격자 제외
+
+            RC tmp = {i, j};
+            if (isWeak(tmp, ret) == false) {     // tmp가 더 크면
+                ret = tmp;
+            }
+        }
+    }
+
     return ret;
 }
 
@@ -215,21 +204,26 @@ int main()
         }
     }
 
-    int time = 0;
-    while (time != k) {
-        time++;
-
+    for (int i = 1; i <= k; i++) {
         // 1. 공격자 선정
-        Point p = getAD();
+        RC attacker = getWeakestTower();
+        RC defender = getStrongestTower(attacker);
+
+        // defender 없음
+        if (defender.row == 0 && defender.col == 0)
+            break;
+        
+        // 2. 공격자 버프
+        board[attacker.row][attacker.col].damage += (n + m);
 
         // 2. 공격자의 공격 + 3. 포탑 부서짐
-        if (!raserAttack(p.ar, p.ac, p.dr, p.dc)) {  // 레이저 공격 실패하면
+        if (!raserAttack(attacker.row, attacker.col, defender.row, defender.col)) {  // 레이저 공격 실패하면
             // 포탄 공격
-            bombardiloCrocodilo(p.ar, p.ac, p.dr, p.dc);
+            bombardiloCrocodilo(attacker.row, attacker.col, defender.row, defender.col);
         }
         
         // 공격 시간 업데이트
-        board[p.ar][p.ac].attack_time = time;
+        board[attacker.row][attacker.col].attack_time = i;
 
         // 4. 포탑 정비
         for (int i = 1; i <= n; i++) {
