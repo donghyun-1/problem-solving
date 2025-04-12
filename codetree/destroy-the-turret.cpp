@@ -1,5 +1,6 @@
 // https://www.codetree.ai/ko/frequent-problems/problems/destroy-the-turret/description
-// 2025-04-12 걸린 시간: 7시 시작
+// 2025-04-12 걸린 시간: 구현 ~ 2시간 30분, 디버깅 ~ 5시간
+// 공격자 구하는 함수가 문제였음 나머지는 제대로 구현함
 
 #include <iostream>
 #include <vector>
