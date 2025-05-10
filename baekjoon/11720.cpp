@@ -7,7 +7,8 @@
 
 using namespace std;
 
-int main() {
+int main() 
+{
     int n;
     int sum = 0;
     string s;
