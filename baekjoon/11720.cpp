@@ -3,9 +3,20 @@
 // 2025-05-10
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 int main() {
-    cout << 1;
+    int n;
+    int sum = 0;
+    string s;
+
+    cin >> n >> s;
+
+    for (int i = 0; i < s.size(); i++) {
+        sum += s[i] - '0';
+    }
+
+    cout << sum;
 }
