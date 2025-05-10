@@ -1,4 +1,5 @@
 // https://www.acmicpc.net/problem/19237
+// 어른 상어
 // 2025-04-09 걸린 시간: 약 5시간
 
 #include <iostream>
