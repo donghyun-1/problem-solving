@@ -13,7 +13,8 @@ int main()
     cin.tie(NULL);
     cout.tie(NULL);
 
-    int n, m, ans = 0;
+    int n, m;
+    long ans = 0;
     cin >> n >> m;
 
     vector<long> sum(n, 0);
@@ -31,6 +32,7 @@ int main()
     for (int i = 0; i < n; i++) {
         int remainder = sum[i] % m;
 
+        // 0 ~ i 까지의 합이 m으로 나누어 떨어지는 경우
         if (remainder == 0) {
             ans++;
         }
