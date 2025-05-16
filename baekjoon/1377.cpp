@@ -24,7 +24,7 @@ int main()
 
     int max = 0;
     for (int i = 0; i < N; i++) {
-        if (max < v[i].second - i) {
+        if (max < v[i].second - i) {    // 정렬 전 idx - 정렬 후 idx
             max = v[i].second - i;
         }
     }
