@@ -1,6 +1,6 @@
 // https://www.acmicpc.net/problem/1940
 // 주몽 (실버 4)
-// 2025-05-11
+// 2025-05-11 
 
 #include <iostream>
 #include <algorithm>
