@@ -1,6 +1,6 @@
 // https://www.acmicpc.net/problem/11724
 // 연결 요소의 개수 (실버 2)
-// 2025-05-21
+// 2025-05-21 
 
 #include <iostream>
 #include <vector>
