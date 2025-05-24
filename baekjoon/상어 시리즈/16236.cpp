@@ -1,4 +1,5 @@
 // https://www.acmicpc.net/problem/16236
+// 아기 상어 (골드 3)
 
 #include <iostream>
 #include <vector>
