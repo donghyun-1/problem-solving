@@ -1,3 +1,7 @@
+// https://www.acmicpc.net/problem/1018
+// 체스판 다시 칠하기 (실버 4)
+// 2025-06-12
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
