@@ -21,6 +21,7 @@ public:
             return ans;
         }
 
+        // 백트래킹
         string temp;
         bt(0, digits.size(), temp, digits);
 
@@ -37,9 +38,9 @@ public:
         string letters = digitsToLetters.at(digits[idx]);
 
         for (int i = 0; i < letters.size(); i++) {
-            temp.push_back(letters[i]);
+            temp.push_back(letters[i]);     // 문자 1개 push
             bt(idx+1, size, temp, digits);
-            temp.pop_back();
+            temp.pop_back();                // 복구
         }
     }
 };
